@@ -1,6 +1,6 @@
 "use server"
 
-import { getSetlistIdFromUrl } from "@/lib/utils/url-parser";
+import { getSetlistIdFromUrl } from "@/lib/utils/getSetlistIdFromUrl";
 
 export const fetchSetlist = async (url: string) => {
   const apiKey = process.env.SETLISTFM_API_KEY
