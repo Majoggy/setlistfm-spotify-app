@@ -1,29 +1,28 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { fetchSetlist } from "@/actions/setlist.actions"
+import { useState } from "react";
+import { fetchSetlist } from "@/actions/setlist.actions";
+import { Setlist } from "@/lib/types/setlist";
 
 export default function Home() {
-  const [setlistId, setSetlistId] = useState("")
-  const [result, setResult] = useState<any>(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [setlistId, setSetlistId] = useState("");
+  const [result, setResult] = useState<Setlist | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
-    setResult(null)
+  async function handleSubmit(e: React.SubmitEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setResult(null);
 
     try {
-      const data = await fetchSetlist(setlistId)
-      setResult(data)
-      console.log("Setlist data:", data)
+      const data = await fetchSetlist(setlistId);
+      setResult(data);
     } catch (err: any) {
-      setError(err.message)
-      console.error("Error fetching setlist:", err)
+      setError(err.message);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -34,7 +33,10 @@ export default function Home() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="setlistId" className="block text-sm font-medium mb-2">
+            <label
+              htmlFor="setlistId"
+              className="block text-sm font-medium mb-2"
+            >
               Setlist ID
             </label>
             <input
@@ -65,13 +67,16 @@ export default function Home() {
 
         {result && (
           <div className="mt-6 p-4 bg-gray-800 border border-gray-700 rounded-lg">
-            <h2 className="text-xl font-semibold mb-4">Result:</h2>
-            <pre className="overflow-x-auto text-sm">
-              {JSON.stringify(result, null, 2)}
-            </pre>
+            <div className="flex gap-2">
+            <h2 className="text-xl font-semibold mb-2">{result.artist}</h2>
+            <h3 className="text-lg font-semibold mb-2">({result.eventDate})</h3>
+            </div>
+            {result.songs.map((song) => {
+              return <div>{song}</div>;
+            })}
           </div>
         )}
       </div>
     </div>
-  )
+  );
 }
