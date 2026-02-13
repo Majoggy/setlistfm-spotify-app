@@ -1,12 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 import { fetchSetlist } from "@/actions/setlist.actions";
+import { signInWithSpotify } from "@/actions/spotify.actions";
 import { Setlist } from "@/lib/types/setlist";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { SetlistResult } from "@/components/SetlistResult";
 
 export default function Home() {
+  const { data: session } = useSession();
   const [setlistUrl, setSetlistUrl] = useState("");
   const [result, setResult] = useState<Setlist | null>(null);
   const [loading, setLoading] = useState(false);
@@ -65,6 +68,17 @@ export default function Home() {
         </form>
         {error && <ErrorMessage message={error} />}
         {result && <SetlistResult setlist={result} />}
+        <button
+          disabled={!result}
+          onClick={() => {
+            if (!session) {
+              signInWithSpotify();
+            }
+          }}
+          className="w-full mt-6 px-6 py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed rounded-lg font-semibold transition"
+        >
+          Create Playlist
+        </button>
       </div>
     </div>
   );
